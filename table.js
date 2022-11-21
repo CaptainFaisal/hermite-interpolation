@@ -8,6 +8,7 @@ $(".table-add").click(function () {
     .clone(true)
     .removeClass("hide table-line");
   $TABLE.find("table").append($clone);
+  selectText($clone.children()[0])
 });
 
 $(".table-remove").click(function () {
