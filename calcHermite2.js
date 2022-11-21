@@ -128,4 +128,4 @@ const hermite_poly = (x, y, y_prime) => {
 };
 // console.log(hermite_poly([0,1,3], [2,4,5], [1,-1,-2]))
 // console.log(hermite_poly([-1,1], [0, 1], [1, 0]))
-console.log(hermite_poly([0.1, 0.2], [-0.62, -0.283], [3.585, 3.14]))
+// console.log(hermite_poly([0.1, 0.2], [-0.62, -0.283], [3.585, 3.14]))
