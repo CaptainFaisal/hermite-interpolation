@@ -1,5 +1,6 @@
 var $TABLE = $("#table");
-var $BTN = $("#export-btn");
+var $BTN = $("#calculate-btn");
+var $BTN2 = $("sd-btn");
 var $EXPORT = $("#export");
 
 $(".table-add").click(function () {
@@ -47,6 +48,23 @@ $("td").focus(function () {
 // A few jQuery helpers for exporting only
 jQuery.fn.pop = [].pop;
 jQuery.fn.shift = [].shift;
+const showOutput = (result, nodeId) => {
+  let latex = "";
+  for(let t=0; t<result.length;t++){
+    if(typeof(result[t])=='object')
+    {
+      sign=result[t][0]*result[t][1]>=0?'+':'-'
+      latex+=`${sign}\\frac{${Math.abs(result[t][0])}}{${Math.abs(result[t][1])}}${t!=0?'x':''}${t>1?'^{'+t+'}':''}`
+    }
+    else
+    {
+      sign=result[t]>=0?'+':'-'
+      latex+=`${sign}${Math.abs(result[t])!=1?Math.abs(result[t]):''}${t!=0?'x':''}${t>1?'^{'+t+'}':''}`
+    }
+  }
+  document.getElementById(nodeId).innerHTML = `\\[p_{${result.length-1}}(x) = ${latex[0]=='-'?latex:latex.slice(1)}\\]`
+  MathJax.typeset();
+}
 
 $BTN.click(function () {
   var $rows = $TABLE.find("tr:not(:hidden)");
@@ -74,26 +92,28 @@ $BTN.click(function () {
   });
 
   // Output the result
-  const x = data.map((dt) => dt["x"]);
-  const y = data.map((dt) => dt["f(x)"]);
-  const y_prime = data.map((dt) => dt["f'(x)"]);
-  const h_poly = hermite_poly(x, y, y_prime);
-  console.log(h_poly);
-  const result = h_poly
-  console.log(result);
-  let latex = "";
-  for(let t=0; t<result.length;t++){
-    if(typeof(result[t])=='object')
-    {
-      sign=result[t][0]*result[t][1]>=0?'+':'-'
-      latex+=`${sign}\\frac{${Math.abs(result[t][0])}}{${Math.abs(result[t][1])}}${t!=0?'x':''}${t>1?'^{'+t+'}':''}`
-    }
-    else
-    {
-      sign=t>=0?'+':'-'
-      latex+=`${sign}${Math.abs(result[t])!=1?Math.abs(result[t]):''}${t!=0?'x':''}${t>1?'^{'+t+'}':''}`
-    }
+  const x = data.map((dt) => parseFloat(dt["x"]));
+  const y = data.map((dt) => parseFloat(dt["f(x)"]));
+  const y_prime = data.map((dt) => parseFloat(dt["f'(x)"]));
+  if(isDuplicate(x)){
+    alert("x data cannot be duplicated");
+    return
   }
-  document.getElementById('MathDiv').innerHTML = `\\[p_{${result.length-1}}(x) = ${latex[0]=='-'?latex:latex.slice(1)}\\]`
-  MathJax.typeset();
+  if(!isValid(x)||!isValid(y)||!isValid(y_prime)){
+    alert("Incorrect data given");
+    return
+  }
+  const h_poly = hermite_poly(x, y, y_prime);
+  const result = h_poly
+  const result2 = h_poly.map(n  => {
+    if(typeof(n)=='object'){
+      if (countDigit(n[0]) || countDigit(n[1])){
+        return (n[0]/n[1]).toPrecision(5)
+      }
+      return n;
+    }
+    return n;
+  })
+  showOutput(result, 'calc-result');
+  document.getElementById('sd-btn').addEventListener('click', ()=>showOutput(result2, 'calc-result2'))
 });
