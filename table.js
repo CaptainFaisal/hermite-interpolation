@@ -51,6 +51,9 @@ jQuery.fn.shift = [].shift;
 const showOutput = (result, nodeId) => {
   let latex = "";
   for(let t=0; t<result.length;t++){
+    if(result[t]==0){
+      continue
+    }
     if(typeof(result[t])=='object')
     {
       sign=result[t][0]*result[t][1]>=0?'+':'-'
