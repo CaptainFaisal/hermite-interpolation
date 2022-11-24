@@ -99,6 +99,10 @@ $BTN.click(function () {
   const y = data.map((dt) => parseFloat(dt["f(x)"]));
   const y_prime = data.map((dt) => parseFloat(dt["f'(x)"]));
   const x_dup = x.slice()
+  if(x.length==1){
+    alert("More than 1 node data is need");
+    return
+  }
   if(isDuplicate(x_dup)){
     alert("x data cannot be duplicated");
     return
