@@ -62,7 +62,7 @@ const showOutput = (result, nodeId) => {
     else
     {
       sign=result[t]>=0?'+':'-'
-      latex+=`${sign}${Math.abs(result[t])!=1?Math.abs(result[t]):''}${t!=0?'x':''}${t>1?'^{'+t+'}':''}`
+      latex+=`${sign}${(Math.abs(result[t])!=1||t==0)?Math.abs(result[t]):''}${t!=0?'x':''}${t>1?'^{'+t+'}':''}`
     }
   }
   document.getElementById(nodeId).innerHTML = `\\[p_{${result.length-1}}(x) = ${latex[0]=='-'?latex:latex.slice(1)}\\]`
